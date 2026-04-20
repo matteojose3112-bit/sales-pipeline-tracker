@@ -1,6 +1,6 @@
 # Sales Pipeline Tracker
 
-Live demo: https://mattejose3112-bit.github.io/sales-pipeline-tracker/
+Live demo: [https://mattejose3112-bit.github.io/sales-pipeline-tracker/](https://matteojose3112-bit.github.io/sales-pipeline-tracker/)
 
 Built a lightweight CRM-style pipeline tool to track leads, deal stages, and revenue.
 
