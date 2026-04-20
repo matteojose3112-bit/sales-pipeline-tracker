@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Pipeline Tracker</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .board {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .column {
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      width: 30%;
+      min-height: 300px;
+    }
+
+    .column h2 {
+      text-align: center;
+    }
+
+    .card {
+      background: #e3e9ff;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      cursor: grab;
+    }
+
+    .add-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Sales Pipeline Tracker</h1>
+
+<button class="add-btn" onclick="addLead()">+ Add Lead</button>
+
+<div style="text-align:center; margin-top:10px;">
+  Total Pipeline: $<span id="total">0</span>
+</div>
+
+<div class="board">
+  <div class="column" id="leads">
+    <h2>Leads</h2>
+  </div>
+
+  <div class="column" id="contacted">
+    <h2>Contacted</h2>
+  </div>
+
+  <div class="column" id="closed">
+    <h2>Closed</h2>
+  </div>
+</div>
+
+<script>
+let draggedCard = null;
+
+// Load saved data on page start
+window.onload = loadLeads;
+
+function addLead() {
+  const name = prompt("Enter lead name:");
+  if (!name) return;
+
+  const value = prompt("Enter deal value ($):");
+  if (!value || isNaN(value)) return;
+
+  const lead = {
+    id: Date.now(),
+    name,
+    value,
+    stage: "leads"
+  };
+
+  saveLead(lead);
+  renderLead(lead);
+  updateTotals();
+}
+
+// Render card to UI
+function renderLead(lead) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.setAttribute("draggable", true);
+  card.dataset.id = lead.id;
+
+  card.innerHTML = `
+    <strong>${lead.name}</strong><br>
+    $<span class="value">${lead.value}</span>
+  `;
+
+  card.addEventListener("dragstart", dragStart);
+
+  document.getElementById(lead.stage).appendChild(card);
+}
+
+// Drag start
+function dragStart(e) {
+  draggedCard = e.target;
+}
+
+// Drag + drop
+const columns = document.querySelectorAll(".column");
+
+columns.forEach(column => {
+  column.addEventListener("dragover", e => {
+    e.preventDefault();
+  });
+
+  column.addEventListener("drop", () => {
+    if (draggedCard) {
+      column.appendChild(draggedCard);
+
+      updateLeadStage(draggedCard.dataset.id, column.id);
+      updateTotals();
+    }
+  });
+});
+
+// Save one lead
+function saveLead(lead) {
+  const leads = JSON.parse(localStorage.getItem("leads")) || [];
+  leads.push(lead);
+  localStorage.setItem("leads", JSON.stringify(leads));
+}
+
+// Load all leads
+function loadLeads() {
+  const leads = JSON.parse(localStorage.getItem("leads")) || [];
+
+  leads.forEach(lead => renderLead(lead));
+  updateTotals();
+}
+
+// Update stage when moved
+function updateLeadStage(id, newStage) {
+  let leads = JSON.parse(localStorage.getItem("leads")) || [];
+
+  leads = leads.map(lead =>
+    lead.id == id ? { ...lead, stage: newStage } : lead
+  );
+
+  localStorage.setItem("leads", JSON.stringify(leads));
+}
+
+// Total calculation
+function updateTotals() {
+  let total = 0;
+
+  document.querySelectorAll(".card .value").forEach(el => {
+    total += Number(el.textContent);
+  });
+
+  document.getElementById("total").textContent = total;
+}
+</script>
+
+</body>
+</html>
