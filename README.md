@@ -1,15 +1,13 @@
 # Sales Pipeline Tracker
 
-Simple web app to track leads, deal stages, and pipeline value.
+Live demo: https://mattejose3112-bit.github.io/sales-pipeline-tracker/
+
+Built a lightweight CRM-style pipeline tool to track leads, deal stages, and revenue.
 
 ## Features
-- Drag & drop pipeline (Leads → Contacted → Closed)
-- Deal value tracking
-- Total pipeline calculation
-- Data saved with LocalStorage
-
-## Live Demo
-https://mattejose3112-bit.github.io/sales-pipeline-tracker/
+- Drag & drop deal stages
+- Pipeline value tracking
+- Persistent storage (LocalStorage)
 
 ## Tech
-- HTML, CSS, JavaScript
+HTML, CSS, JavaScript
